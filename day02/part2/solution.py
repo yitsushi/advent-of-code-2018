@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
+import advent_of_code as aoc
 import regex, sys
 
-with open('../input') as f:
-    idList = [id for id in f.read().split('\n') if id != '']
+input_file = aoc.parameters(1, (str, ))
+idList = [l for l in aoc.read_input(input_file)]
+
+has_two = 0
+has_three = 0
 
 for index in range(0, len(idList)):
     current = idList[index]

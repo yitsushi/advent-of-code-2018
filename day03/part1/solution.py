@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-import re
-#import Image
-from PIL import Image
-
-LINE_MATCH = '^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
+import advent_of_code as aoc
 
 class Claim():
     id = 0
@@ -13,15 +9,12 @@ class Claim():
     width = 0
     height = 0
 
-    def __init__(self, s):
-        groups = re.search(LINE_MATCH, s).groups()
-        (self.id,
-                self.x, self.y,
-                self.width, self.height
-        ) = [int(v) for v in groups]
-
-with open('../input') as f:
-    claims = [Claim(claim) for claim in f.read().split('\n') if claim != '']
+    def __init__(self, id:int, x:int, y:int, width:int, height:int):
+        self.id = id
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
 
 class Canvas():
     sarea = []
@@ -37,16 +30,6 @@ class Canvas():
         for h in range(0, claim.height):
             self.area[claim.y + h][claim.x:claim.x+claim.width] = [x + 1 for x in self.area[claim.y + h][claim.x:claim.x+claim.width]]
 
-    def draw(self):
-        im = Image.new('RGB', (self.width, self.height))
-        for y in range(0, self.height):
-            for x in range(0, self.width):
-                extract = min((self.area[y][x] * 30), 255)
-                value = (255, 255 - extract, 255 - extract)
-                im.putpixel(xy=(x, y), value=value)
-
-        return im
-
     def overlap(self):
         area_count = 0
         for row in self.area:
@@ -54,13 +37,12 @@ class Canvas():
 
         return area_count
 
-canvas = Canvas(1000, 1000)
+input_file, width, height = aoc.parameters(3, (str, int, int))
 
-for claim in claims:
-    canvas.cut(claim)
+canvas = Canvas(width, height)
+
+LINE_MATCH = '^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
+p = lambda line: Claim(*aoc.parse(line, LINE_MATCH, (int, int, int, int, int)))
+claims = [canvas.cut(p(line)) for line in aoc.read_input(input_file)]
 
 print(canvas.overlap())
-
-image = canvas.draw()
-image.save('test.png')
-
