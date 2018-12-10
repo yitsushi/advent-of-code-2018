@@ -2,6 +2,7 @@
 
 import operator, os, logging
 from logging.config import dictConfig
+from collections import deque
 
 _logLevel = os.getenv('LOG_LEVEL', None)
 
@@ -61,41 +62,41 @@ class Circle:
     config = None
     scoreBoard = None
     marbles = None
-    head = 0
     currentPlayer = 0
     marbleInHand = 0
+    percentProgress = 0
 
     def __init__(self, *, number_of_players=None, last_marble=None):
         self.scoreBoard = ScoreBoard()
         self.config = Configuration(last_marble, number_of_players)
-        self.marbles = [0]
+        self.marbles = deque()
+        self.marbles.append(0)
         self.marbleInHand = 1
+        self.percentProgress = int(last_marble / 100)
+        Log.info("Rounds per Percent: {:d}".format(self.percentProgress))
 
     def is_it_over_yet(self):
         return self.marbleInHand > self.config.LastMarble
 
     def put(self):
-        Log.info('Player #%d puts down marble #%d', self.currentPlayer, self.marbleInHand)
-
-        index = 0
+        if self.marbleInHand % self.percentProgress == 0:
+            Log.info(
+                    'Player #%d puts down marble #%d (%d%%)',
+                    self.currentPlayer, self.marbleInHand,
+                    self.marbleInHand / self.percentProgress)
 
         if self.marbleInHand % 23 == 0:
-            self.scoreBoard.add_score(self.currentPlayer, self.marbleInHand)
-            index = self.head - 7
-            if index < 0:
-                index = len(self.marbles) + index
-            self.scoreBoard.add_score(self.currentPlayer, self.marbles.pop(index))
+            self.marbles.rotate(7)
+            self.scoreBoard.add_score(self.currentPlayer, self.marbles.pop() + self.marbleInHand)
+            self.marbles.rotate(-1)
         else:
-            index = self.head + 2
-            if index > len(self.marbles):
-                index = index - len(self.marbles)
-            self.marbles.insert(index, self.marbleInHand)
+            self.marbles.rotate(-1)
+            self.marbles.append(self.marbleInHand)
 
         Log.debug('Board looks like: %s', self.marbles)
 
         self.marbleInHand += 1
         self.currentPlayer = (self.currentPlayer + 1) % self.config.NumberOfPlayers
-        self.head = index
 
     def winner(self):
         return self.scoreBoard.winner()
