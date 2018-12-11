@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 
-with open('../input') as f:
-    content = [int(n) for n in f.read().split('\n') if n != '']
+import advent_of_code as aoc
+
+input_file = aoc.parameters(1, (str,))
+
+numbers = [int(line) for line in aoc.read_input(input_file)]
 
 frequencies = {}
 summary = 0
 inProgress = True
 
 while inProgress:
-    for n in content:
+    for n in numbers:
         summary += n
         if str(summary) in frequencies:
             inProgress = False

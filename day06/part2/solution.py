@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from collections import Counter
+import advent_of_code as aoc
 
 class Point:
     x = 0
@@ -11,8 +12,8 @@ class Point:
         self.y = y
 
 class Target(Point):
-    def __init__(self, s):
-        (self.x, self.y) = [int(x) for x in  s.split(', ')]
+    def __init__(self, x, y):
+        (self.x, self.y) = (x, y)
 
 class Map:
     width = 0
@@ -51,9 +52,8 @@ class Map:
     def flat(self):
         return [x for line in self.area for x in line]
 
-LIMIT = 10000
-with open('../input') as f:
-    targets = [Target(line) for line in f.read().split('\n') if line != '']
+input_file, limit = aoc.parameters(2, (str, int), (None, 10_000))
+targets = [Target(*[int(x) for x in line.split(', ')]) for line in aoc.read_input(input_file)]
 
 max_x = max([t.x for t in targets])
 max_y = max([t.y for t in targets])
@@ -64,6 +64,6 @@ for t in targets:
 
 full_map.fill()
 
-filtered = [x for x in full_map.flat() if x < LIMIT]
+filtered = [x for x in full_map.flat() if x < limit]
 
 print(len(filtered))

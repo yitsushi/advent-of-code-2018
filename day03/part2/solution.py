@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import re
-
-LINE_MATCH = '^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
+import advent_of_code as aoc
 
 class Claim():
     id = 0
@@ -11,12 +10,12 @@ class Claim():
     width = 0
     height = 0
 
-    def __init__(self, s):
-        groups = re.search(LINE_MATCH, s).groups()
-        (self.id,
-                self.x, self.y,
-                self.width, self.height
-        ) = [int(v) for v in groups]
+    def __init__(self, id:int, x:int, y:int, width:int, height:int):
+        self.id = id
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
 
 class Canvas():
     sarea = []
@@ -60,15 +59,16 @@ class Canvas():
 
         print()
 
+input_file, width, height = aoc.parameters(3, (str, int, int), (None, 1000, 1000))
+
 print('[+] Prepare')
-canvas = Canvas(1000, 1000)
+canvas = Canvas(width, height)
 
-with open('../input') as f:
-    claims = [Claim(claim) for claim in f.read().split('\n') if claim != '']
+LINE_MATCH = '^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
+p = lambda line: Claim(*aoc.parse(line, LINE_MATCH, (int, int, int, int, int)))
+claims = [p(line) for line in aoc.read_input(input_file)]
 
-print('[+] Cut')
-for claim in claims:
-    canvas.cut(claim)
+[canvas.cut(c) for c in claims]
 
 print('[+] Cleanup')
 withOverlap = canvas.simplify()

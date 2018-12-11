@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-with open('../input') as f:
-    content = [int(n) for n in f.read().split('\n') if n != '']
+import advent_of_code as aoc
 
-print(sum(content))
+input_file = aoc.parameters(1, (str,))
+
+print(sum([int(line) for line in aoc.read_input(input_file)]))

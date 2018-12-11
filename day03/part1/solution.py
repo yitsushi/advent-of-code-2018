@@ -37,7 +37,7 @@ class Canvas():
 
         return area_count
 
-input_file, width, height = aoc.parameters(3, (str, int, int))
+input_file, width, height = aoc.parameters(3, (str, int, int), (None, 1000, 1000))
 
 canvas = Canvas(width, height)
 

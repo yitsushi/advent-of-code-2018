@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import advent_of_code as aoc
+
 class Node:
     children = None
     meta = None
@@ -39,8 +41,8 @@ def parse(numbers):
 
     return (node, numbers)
 
-with open('../input') as f:
-    numbers = [int(n) for n in f.read().split(' ') if n != '']
+input_file = aoc.parameters(1, (str,))
+numbers = [int(n) for n in aoc.read_input(input_file, separator=' ')]
 
 (root, _) = parse(numbers)
 

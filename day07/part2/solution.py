@@ -1,35 +1,6 @@
 #!/usr/bin/env python3
 
-import re
-
-INSTRUCTION_PATTERN = r'^Step (\w) must be finished before step (\w) can begin.$'
-NUMBER_OF_WORKERS = 5
-TASK_DEFAULT_LENGTH = 60
-
-with open('../input') as f:
-    raw_instructions = [line for line in f.read().split('\n') if line != '']
-
-task_graph = {}
-list_of_tasks = []
-
-for line in raw_instructions:
-    (task1, task2) = re.search(INSTRUCTION_PATTERN, line).groups()
-    task_graph[task2] = task_graph.get(task2, []) + [task1]
-    list_of_tasks.append(task1)
-    list_of_tasks.append(task2)
-
-list_of_tasks = sorted(set(list_of_tasks))
-final_sequence = []
-
-for add in list_of_tasks:
-    if add not in task_graph:
-        task_graph[add] = []
-
-def done(task):
-    final_sequence.append(task)
-    for t in task_graph:
-        if task_graph[t] is not None and task in task_graph[t]:
-            task_graph[t].remove(task)
+import advent_of_code as aoc
 
 class Worker:
     item = None
@@ -50,10 +21,34 @@ class Worker:
     def assign(self, task, current_time):
         task_graph[task] = None
         self.item = task
-        self.busy_until = current_time + TASK_DEFAULT_LENGTH + (ord(task) - 64) - 1
+        self.busy_until = current_time + task_default_length + (ord(task) - 64) - 1
         print(f'Task "{task}" assigned to {id(self)} -> {self.busy_until}')
 
-workers = [Worker() for _ in range(0, NUMBER_OF_WORKERS)]
+def done(task):
+    final_sequence.append(task)
+    for t in task_graph:
+        if task_graph[t] is not None and task in task_graph[t]:
+            task_graph[t].remove(task)
+
+task_graph = {}
+list_of_tasks = []
+
+INSTRUCTION_PATTERN = r'^Step (\w) must be finished before step (\w) can begin.$'
+input_file, number_of_workers, task_default_length = aoc.parameters(3, (str, int, int), (None, 5, 60))
+for line in aoc.read_input(input_file):
+    task1, task2 = aoc.parse(line, INSTRUCTION_PATTERN, (str, str))
+    task_graph[task2] = task_graph.get(task2, []) + [task1]
+    list_of_tasks.append(task1)
+    list_of_tasks.append(task2)
+
+list_of_tasks = sorted(set(list_of_tasks))
+final_sequence = []
+
+for add in list_of_tasks:
+    if add not in task_graph:
+        task_graph[add] = []
+
+workers = [Worker() for _ in range(0, number_of_workers)]
 
 current_time = 0
 while len(final_sequence) < len(list_of_tasks):

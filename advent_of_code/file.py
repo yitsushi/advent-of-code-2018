@@ -3,10 +3,18 @@
 import sys, re
 from typing import Tuple, List, Pattern
 
-def parameters(number_of_parameters:int = 1, parameter_types:Tuple = (str,)):
-    if len(sys.argv) <= number_of_parameters:
-        print(f"Required parameters {parameter_types}.")
+def parameters(number_of_parameters:int = 1, parameter_types:Tuple = (str,), default:Tuple=(None, )):
+    if len(default) != number_of_parameters or len(parameter_types) != number_of_parameters:
+        print("Wrong function call: ({}, {}, {})".format(number_of_parameters, parameter_types, default))
         sys.exit(-1)
+
+    number_of_nones = default.count(None)
+    if len(sys.argv) <= number_of_nones:
+        print(f"Required parameters {parameter_types} => {default}.")
+        sys.exit(-1)
+
+    for i in range(len(sys.argv)-1, number_of_parameters):
+        sys.argv.append(default[i])
 
     params = list([t(v) for t, v in zip(parameter_types, sys.argv[1:number_of_parameters+1])])
 

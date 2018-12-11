@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-material = None
+import advent_of_code as aoc
 
-with open('../input') as f:
-    material = f.read().strip()
+input_file = aoc.parameters(1, (str,))
+material = list(aoc.read_input(input_file))[0]
 
 def is_opposite_polarity(a, b):
     return (a.upper() == b.upper()) and (a != b)

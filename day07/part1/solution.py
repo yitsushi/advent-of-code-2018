@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 
-import re
+import advent_of_code as aoc
 
-INSTRUCTION_PATTERN = r'^Step (\w) must be finished before step (\w) can begin.$'
-
-with open('../input') as f:
-    raw_instructions = [line for line in f.read().split('\n') if line != '']
+def done(task):
+    task_graph[task] = None
+    final_sequence.append(task)
+    for t in task_graph:
+        if task_graph[t] is not None and task in task_graph[t]:
+            task_graph[t].remove(task)
 
 task_graph = {}
 list_of_tasks = []
 
-for line in raw_instructions:
-    (task1, task2) = re.search(INSTRUCTION_PATTERN, line).groups()
+INSTRUCTION_PATTERN = r'^Step (\w) must be finished before step (\w) can begin.$'
+input_file = aoc.parameters(1, (str, ))
+for line in aoc.read_input(input_file):
+    task1, task2 = aoc.parse(line, INSTRUCTION_PATTERN, (str, str))
     task_graph[task2] = task_graph.get(task2, []) + [task1]
     list_of_tasks.append(task1)
     list_of_tasks.append(task2)
@@ -23,12 +27,6 @@ for add in list_of_tasks:
     if add not in task_graph:
         task_graph[add] = []
 
-def done(task):
-    task_graph[task] = None
-    final_sequence.append(task)
-    for t in task_graph:
-        if task_graph[t] is not None and task in task_graph[t]:
-            task_graph[t].remove(task)
 
 while len(final_sequence) < len(list_of_tasks):
     for task in list_of_tasks:

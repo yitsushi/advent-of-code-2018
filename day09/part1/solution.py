@@ -3,6 +3,7 @@
 import operator, os, logging
 from logging.config import dictConfig
 from collections import deque
+import advent_of_code as aoc
 
 _logLevel = os.getenv('LOG_LEVEL', None)
 
@@ -104,7 +105,8 @@ class Circle:
     def high_score(self):
         return self.scoreBoard.high_score()
 
-area = Circle(number_of_players=424, last_marble=71482)
+_nop, _lm = aoc.parameters(2, (int, int), (None, None))
+area = Circle(number_of_players=_nop, last_marble=_lm)
 
 while not area.is_it_over_yet():
     area.put()

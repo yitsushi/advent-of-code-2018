@@ -2,6 +2,7 @@
 
 import re, math
 from PIL import Image
+import advent_of_code as aoc
 
 class Point:
     STR_FORMAT = r'^position=< *([0-9-]+), *([0-9-]+)> velocity=< *([0-9-]+), *([0-9-]+)>$'
@@ -18,7 +19,7 @@ class Point:
         self.y += self.velocity[1] * count
 
     def from_string(line):
-        (x, y, vx, vy) = [int(v) for v in re.search(Point.STR_FORMAT, line).groups()]
+        (x, y, vx, vy) = aoc.parse(line, Point.STR_FORMAT, (int, int, int, int))
         return Point((x, y), (vx, vy))
 
 
@@ -69,8 +70,8 @@ class Sky:
 
 
 sky = Sky()
-with open('../input') as f:
-    [sky.add_point(Point.from_string(line)) for line in f.read().split("\n") if line != '']
+input_file = aoc.parameters(1, (str, ))
+[sky.add_point(Point.from_string(line)) for line in aoc.read_input(input_file)]
 
 last_area = sky.metrics()[4]
 sky.step(1)
@@ -94,7 +95,6 @@ for s in speed:
     last_area = area
     print(">>> Turn")
 
-#sky.step(direction * -1)
 print(">>> Steps: {}".format(sky.stepsMade))
 data = sky.metrics()
 print(">>> Size: {}x{}".format(data[1] - data[0], data[3] - data[2]))
