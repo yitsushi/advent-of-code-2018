@@ -13,7 +13,7 @@ task_graph = {}
 list_of_tasks = []
 
 INSTRUCTION_PATTERN = r'^Step (\w) must be finished before step (\w) can begin.$'
-input_file = aoc.parameters(1, (str, ))
+input_file = aoc.parameters()
 for line in aoc.read_input(input_file):
     task1, task2 = aoc.parse(line, INSTRUCTION_PATTERN, (str, str))
     task_graph[task2] = task_graph.get(task2, []) + [task1]

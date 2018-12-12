@@ -2,7 +2,7 @@
 
 import advent_of_code as aoc
 
-input_file = aoc.parameters(1, (str,))
+input_file = aoc.parameters()
 material = list(aoc.read_input(input_file))[0]
 
 def is_opposite_polarity(a, b):

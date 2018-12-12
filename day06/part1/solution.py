@@ -58,7 +58,7 @@ class Map:
         ids = set(self.area[0] + self.area[self.height] + [l[0] for l in self.area] + [l[self.width] for l in self.area])
         return [x for line in self.area for x in line if x not in ids]
 
-input_file = aoc.parameters(1, (str,))
+input_file = aoc.parameters()
 targets = [Target(*[int(x) for x in line.split(', ')]) for line in aoc.read_input(input_file)]
 
 max_x = max([t.x for t in targets])

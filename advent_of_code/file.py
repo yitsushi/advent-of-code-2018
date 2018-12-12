@@ -3,25 +3,33 @@
 import sys, re
 from typing import Tuple, List, Pattern
 
-def parameters(number_of_parameters:int = 1, parameter_types:Tuple = (str,), default:Tuple=(None, )):
-    if len(default) != number_of_parameters or len(parameter_types) != number_of_parameters:
-        print("Wrong function call: ({}, {}, {})".format(number_of_parameters, parameter_types, default))
+def parameters(parameter_types:Tuple = (str,), names:Tuple = ("Input File", ), default:Tuple=(None, )):
+    try:
+        if len(default) != len(parameter_types) or len(names) != len(parameter_types):
+            print("Wrong function call: ({}, {}, {})".format(parameter_types, names, default))
+            sys.exit(-1)
+
+        number_of_nones = default.count(None)
+        if len(sys.argv) <= number_of_nones:
+            raise Exception("Wrong number of arguments!")
+            sys.exit(-1)
+
+        for i in range(len(sys.argv)-1, len(parameter_types)):
+            sys.argv.append(default[i])
+
+        params = list([t(v) for t, v in zip(parameter_types, sys.argv[1:len(parameter_types)+1])])
+
+        if len(params) == 1:
+            return params[0]
+
+        return params
+    except Exception as e:
+        print(f" !!! {e}")
+        max_name_length = max([len(v) for v in names]) + 3
+        ktv = [f'{{:{max_name_length}s}} {{}} = {{}}'.format(k, t, v)
+                for k, t, v in zip(names, parameter_types, [v or "(required)" for v in default])]
+        print("Required parameters:\n\t{}".format('\n\t'.join(ktv)))
         sys.exit(-1)
-
-    number_of_nones = default.count(None)
-    if len(sys.argv) <= number_of_nones:
-        print(f"Required parameters {parameter_types} => {default}.")
-        sys.exit(-1)
-
-    for i in range(len(sys.argv)-1, number_of_parameters):
-        sys.argv.append(default[i])
-
-    params = list([t(v) for t, v in zip(parameter_types, sys.argv[1:number_of_parameters+1])])
-
-    if len(params) == 1:
-        return params[0]
-
-    return params
 
 def read_input(path:str, separator:str = '\n', ignore:List = ['']):
     with open(path) as f:
@@ -41,8 +49,8 @@ def parse(content:str, pattern:Pattern, types:Tuple):
 
 if __name__ == '__main__':
     sys.argv = [sys.argv[0]]
-    sys.argv.append('../day01/input')
-    input_file = parameters(1, (str,))
+    sys.argv.append('day01/input')
+    input_file = parameters()
     try:
         numbers = [int(line) for line in read_input(input_file)]
         print('Sample:')
@@ -52,8 +60,8 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     sys.argv = [sys.argv[0]]
-    sys.argv.append('../day02/input')
-    input_file = parameters(1, (str,))
+    sys.argv.append('day02/input')
+    input_file = parameters()
     try:
         codes = [line for line in read_input(input_file)]
         print('Sample:')
@@ -64,8 +72,8 @@ if __name__ == '__main__':
 
     # TODO: parse
     sys.argv = [sys.argv[0]]
-    sys.argv.append('../day03/input')
-    input_file = parameters(1, (str,))
+    sys.argv.append('day03/input')
+    input_file = parameters()
     pattern = r'^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
     try:
         claims = [parse(line, pattern, (int, int, int, int, int)) for line in read_input(input_file)]
@@ -76,8 +84,8 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     sys.argv = [sys.argv[0]]
-    sys.argv.append('../day08/input')
-    input_file = parameters(1, (str,))
+    sys.argv.append('day08/input')
+    input_file = parameters()
     try:
         numbers = [int(line) for line in read_input(input_file, separator=' ')]
         print('Sample:')
@@ -87,10 +95,10 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     sys.argv = [sys.argv[0]]
-    sys.argv.append('../day08/input')
+    sys.argv.append('day08/input')
     sys.argv.append('1000')
     sys.argv.append('2000')
-    input_file, width, height = parameters(3, (str, int, int))
+    input_file, width, height = parameters((str, int, int), ('Input File', 'Width', 'Height'), (None, 1000, 1000))
 
     print("{:s} | {:d}x{:d}".format(input_file, width, height))
 

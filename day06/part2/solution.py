@@ -52,7 +52,7 @@ class Map:
     def flat(self):
         return [x for line in self.area for x in line]
 
-input_file, limit = aoc.parameters(2, (str, int), (None, 10_000))
+input_file, limit = aoc.parameters((str, int), ('Input File', 'Range') (None, 10_000))
 targets = [Target(*[int(x) for x in line.split(', ')]) for line in aoc.read_input(input_file)]
 
 max_x = max([t.x for t in targets])

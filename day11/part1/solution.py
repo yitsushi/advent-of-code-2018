@@ -2,7 +2,7 @@
 
 import advent_of_code as aoc
 
-serial_number = aoc.parameters(1, (int, ))
+serial_number = aoc.parameters((int, ), ('Serial Number', ))
 
 def level(x, y):
     rack_id = x + 10

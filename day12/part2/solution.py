@@ -2,8 +2,6 @@
 
 import advent_of_code as aoc
 
-input_file, generations = aoc.parameters(2, (str, int), (None, 50_000_000_000))
-
 class Cave:
     pots = None
     patterns = None
@@ -43,6 +41,10 @@ class Cave:
 
 cave = Cave()
 
+input_file, generations = aoc.parameters(
+        (str, int),
+        ('Input File', 'Generations'),
+        (None, 50_000_000_000))
 for line in aoc.read_input(input_file):
     if "initial state:" in line:
         cave.set_state(line.split(' ')[-1])
@@ -52,7 +54,6 @@ for line in aoc.read_input(input_file):
 last_value = sum(cave.pots_with_plant())
 diff_history = []
 for gen in range(0, generations):
-    #print("{:10d} -> {:5.1f}%".format(gen, gen/generations * 100), end='\r')
     cave.next()
     current_value = sum(cave.pots_with_plant())
     diff = current_value - last_value

@@ -2,6 +2,6 @@
 
 import advent_of_code as aoc
 
-input_file = aoc.parameters(1, (str,))
+input_file = aoc.parameters()
 
 print(sum([int(line) for line in aoc.read_input(input_file)]))

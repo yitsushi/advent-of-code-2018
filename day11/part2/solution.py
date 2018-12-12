@@ -2,7 +2,7 @@
 
 import advent_of_code as aoc
 
-serial_number = aoc.parameters(1, (int, ))
+serial_number = aoc.parameters((int, ), ('Serial Number', ))
 
 def level(x, y):
     rack_id = x + 10
@@ -48,4 +48,4 @@ for y in range(0, 300):
             if value > max_value[0]:
                 max_value = (value, x+1, y+1, s+1)
 
-print('Maximum valie is {:d} at {:d},{:d},{:d}'.format(*max_value))
+print('Maximum value is {:d} at {:d},{:d},{:d}'.format(*max_value))

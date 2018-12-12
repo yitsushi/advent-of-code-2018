@@ -105,7 +105,7 @@ class Circle:
     def high_score(self):
         return self.scoreBoard.high_score()
 
-_nop, _lm = aoc.parameters(2, (int, int), (None, None))
+_nop, _lm = aoc.parameters((int, int), ('Number of Players', 'Value of The Last Marble'), (None, None))
 area = Circle(number_of_players=_nop, last_marble=_lm)
 
 while not area.is_it_over_yet():
