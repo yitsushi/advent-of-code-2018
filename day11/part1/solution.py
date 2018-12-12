@@ -2,29 +2,31 @@
 
 import advent_of_code as aoc
 
-serial_number = aoc.parameters((int, ), ('Serial Number', ))
+SIZE = 300
 
 def level(x, y):
     rack_id = x + 10
     power_start = rack_id * y
     return (((power_start + serial_number) * rack_id) % 1000 // 100) - 5
 
-def neighbors(x, y):
-    valid = lambda n: n >=0 and n < 300
-    window = [0, 1, 2]
-    return [((x+i, y+j)) for i in window for j in window if valid(x+i) and valid(y+j) ]
+serial_number = aoc.parameters((int, ), ('Serial Number', ))
+sum_table = aoc.data_structure.SumTable(SIZE, SIZE)
 
-area = []
-for y in range(1, 301):
-    area.append([level(x, y) for x in range(1, 301)])
+print('>>> Populate')
+for y in range(1, SIZE+1):
+    sum_table.set_row(y - 1, [level(x, y) for x in range(1, SIZE+1)])
 
-windows = []
-for y in range(0, 300):
-    for x in range(0, 300):
-        windows.append(sum([area[_y][_x] for _x, _y in neighbors(x, y)]))
+print('>>> Calculate SumTable')
+sum_table.calculate()
 
-max_value = max(windows)
-index = windows.index(max_value)
 
-print(max_value)
-print(index % 300 + 1, index // 300 + 1)
+print('>>> Find')
+max_value = (-10000, 0, 0)
+
+for y in range(0, SIZE-2):
+    for x in range(0, SIZE-2):
+        value = sum_table.area((x, y), (x+2, y+2))
+        if value > max_value[0]:
+            max_value = (value, x+1, y+1)
+
+print('Maximum value is {:d} at {:d},{:d}'.format(*max_value))
