@@ -2,6 +2,7 @@
 
 from collections import Counter
 import advent_of_code as aoc
+from typing import List, Any
 
 class Point:
     x = 0
@@ -18,25 +19,25 @@ class Target(Point):
 class Map:
     width = 0
     height = 0
-    area = None
-    targets = []
+    area:List[List[Any]] = []
+    targets:List[Target] = []
 
-    def __init__(self, width, height):
+    def __init__(self, width:int, height:int):
         self.width = width
         self.height = height
 
         self.area = [['.' for _ in range(0, self.width+1)] for _ in range(0, self.height+1)]
 
-    def is_on_grid(self, x, y):
+    def is_on_grid(self, x:int, y:int):
         return (x >= 0 and x <= self.width and y >= 0 and y <= self.height)
 
-    def add_target(self, target):
+    def add_target(self, target:Target):
         self.targets.append(target)
 
-    def distance(self, p1, p2):
+    def distance(self, p1:Point, p2:Point):
         return abs(p1.x - p2.x) + abs(p1.y - p2.y)
 
-    def cloest_target(self, x, y):
+    def cloest_target(self, x:int, y:int):
         distances = sorted([(self.distance(self.targets[i], Point(x, y)), i) for i in range(0, len(self.targets))])
 
         if distances[0][0] == distances[1][0]:
@@ -54,11 +55,11 @@ class Map:
 
         print()
 
-    def flat_map_without_edges(self):
+    def flat_map_without_edges(self) -> List[Target]:
         ids = set(self.area[0] + self.area[self.height] + [l[0] for l in self.area] + [l[self.width] for l in self.area])
         return [x for line in self.area for x in line if x not in ids]
 
-input_file = aoc.parameters()
+(input_file, ) = aoc.parameters()
 targets = [Target(*[int(x) for x in line.split(', ')]) for line in aoc.read_input(input_file)]
 
 max_x = max([t.x for t in targets])

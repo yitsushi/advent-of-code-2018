@@ -2,7 +2,7 @@
 
 import advent_of_code as aoc
 
-input_file = aoc.parameters()
+(input_file, ) = aoc.parameters()
 idList = aoc.read_input(input_file)
 
 has_two = 0

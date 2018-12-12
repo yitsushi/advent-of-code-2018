@@ -3,7 +3,7 @@
 import advent_of_code as aoc
 import regex, sys
 
-input_file = aoc.parameters()
+(input_file, ) = aoc.parameters()
 idList = [l for l in aoc.read_input(input_file)]
 
 has_two = 0

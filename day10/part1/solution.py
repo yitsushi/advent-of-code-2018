@@ -70,7 +70,7 @@ class Sky:
 
 
 sky = Sky()
-input_file = aoc.parameters()
+(input_file, ) = aoc.parameters()
 [sky.add_point(Point.from_string(line)) for line in aoc.read_input(input_file)]
 
 last_area = sky.metrics()[4]

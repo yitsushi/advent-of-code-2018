@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+import re
 import advent_of_code as aoc
+from typing import Dict, List
 
 class Worker:
     item = None
@@ -30,13 +32,13 @@ def done(task):
         if task_graph[t] is not None and task in task_graph[t]:
             task_graph[t].remove(task)
 
-task_graph = {}
-list_of_tasks = []
+task_graph:Dict[str,List[str]] = {}
+list_of_tasks:List[str] = []
 
-INSTRUCTION_PATTERN = r'^Step (\w) must be finished before step (\w) can begin.$'
+INSTRUCTION_PATTERN = re.compile(r'^Step (\w) must be finished before step (\w) can begin.$')
 input_file, number_of_workers, task_default_length = aoc.parameters(
         (str, int, int),
-        ('Input File', 'NUmber of Workers', 'Default Task Length')
+        ('Input File', 'NUmber of Workers', 'Default Task Length'),
         (None, 5, 60))
 for line in aoc.read_input(input_file):
     task1, task2 = aoc.parse(line, INSTRUCTION_PATTERN, (str, str))
@@ -45,7 +47,7 @@ for line in aoc.read_input(input_file):
     list_of_tasks.append(task2)
 
 list_of_tasks = sorted(set(list_of_tasks))
-final_sequence = []
+final_sequence:List[str] = []
 
 for add in list_of_tasks:
     if add not in task_graph:

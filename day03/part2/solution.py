@@ -2,6 +2,7 @@
 
 import re
 import advent_of_code as aoc
+from typing import List
 
 class Claim():
     id = 0
@@ -18,7 +19,7 @@ class Claim():
         self.height = height
 
 class Canvas():
-    sarea = []
+    area:List[List[List[int]]] = []
     width = 0
     height = 0
 
@@ -64,7 +65,7 @@ input_file, width, height = aoc.parameters((str, int, int), ('Input File', 'Widt
 print('[+] Prepare')
 canvas = Canvas(width, height)
 
-LINE_MATCH = '^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
+LINE_MATCH = re.compile(r'^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$')
 p = lambda line: Claim(*aoc.parse(line, LINE_MATCH, (int, int, int, int, int)))
 claims = [p(line) for line in aoc.read_input(input_file)]
 

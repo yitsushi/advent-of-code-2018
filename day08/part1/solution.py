@@ -36,7 +36,7 @@ def parse(numbers):
 
     return (node, numbers)
 
-input_file = aoc.parameters()
+(input_file, ) = aoc.parameters()
 numbers = [int(n) for n in aoc.read_input(input_file, separator=' ')]
 
 (root, _) = parse(numbers)
