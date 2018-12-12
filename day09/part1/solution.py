@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import operator, os, logging
+import os
+import logging
 from logging.config import dictConfig
 from collections import deque
 import advent_of_code as aoc
@@ -16,23 +17,24 @@ else:
 
 
 logging_config = dict(
-    version = 1,
-    formatters = {
+    version=1,
+    formatters={
         'f': {'format':
               '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'}
         },
-    handlers = {
+    handlers={
         'h': {'class': 'logging.StreamHandler',
               'formatter': 'f',
               'level': logLevel}
         },
-    root = {
+    root={
         'handlers': ['h'],
         'level': logLevel,
         },
 )
 dictConfig(logging_config)
 Log = logging.getLogger()
+
 
 class Configuration:
     NumberOfPlayers = 10
@@ -44,6 +46,7 @@ class Configuration:
         if number_of_players is not None:
             self.NumberOfPlayers = number_of_players
 
+
 class ScoreBoard:
     players = None
 
@@ -53,11 +56,9 @@ class ScoreBoard:
     def add_score(self, player, score):
         self.players[player] = self.players.get(player, 0) + score
 
-    def winner(self):
-        max(self.players.iteritems(), key=operator.itemgetter(1))[0]
-
     def high_score(self):
         return max(self.players.values())
+
 
 class Circle:
     config = None
@@ -99,11 +100,9 @@ class Circle:
         self.marbleInHand += 1
         self.currentPlayer = (self.currentPlayer + 1) % self.config.NumberOfPlayers
 
-    def winner(self):
-        return self.scoreBoard.winner()
-
     def high_score(self):
         return self.scoreBoard.high_score()
+
 
 _nop, _lm = aoc.parameters((int, int), ('Number of Players', 'Value of The Last Marble'), (None, None))
 area = Circle(number_of_players=_nop, last_marble=_lm)

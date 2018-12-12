@@ -7,7 +7,7 @@ from typing import Dict
 
 numbers = [int(line) for line in aoc.read_input(input_file)]
 
-frequencies:Dict[int, bool] = {}
+frequencies: Dict[int, bool] = {}
 summary = 0
 inProgress = True
 

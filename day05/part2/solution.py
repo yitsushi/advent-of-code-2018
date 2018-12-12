@@ -2,11 +2,10 @@
 
 import advent_of_code as aoc
 
-(input_file, ) = aoc.parameters()
-material = list(aoc.read_input(input_file))[0]
 
 def is_opposite_polarity(a, b):
     return (a.upper() == b.upper()) and (a != b)
+
 
 def test(chain, to_remove):
     chain = chain.replace(to_remove, '').replace(to_remove.upper(), '')
@@ -18,6 +17,10 @@ def test(chain, to_remove):
         else:
             i += 1
     return chain
+
+
+(input_file, ) = aoc.parameters()
+material = list(aoc.read_input(input_file))[0]
 
 shortest = min([len(test(material, ch)) for ch in set(list(material.lower()))])
 print(shortest)

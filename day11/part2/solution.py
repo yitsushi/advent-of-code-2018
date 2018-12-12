@@ -4,12 +4,14 @@ import advent_of_code as aoc
 
 SIZE = 300
 
-def level(x, y):
-    rack_id = x + 10
-    power_start = rack_id * y
+
+def level(_x: int, _y: int):
+    rack_id = _x + 10
+    power_start = rack_id * _y
     return (((power_start + serial_number) * rack_id) % 1000 // 100) - 5
 
-serial_number = aoc.parameters((int, ), ('Serial Number', ))
+
+(serial_number, ) = aoc.parameters((int, ), ('Serial Number', ))
 sum_table = aoc.data_structure.SumTable(SIZE, SIZE)
 
 print('>>> Populate')

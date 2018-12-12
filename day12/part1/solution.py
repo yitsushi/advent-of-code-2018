@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import advent_of_code as aoc
+from typing import Dict
+
 
 class Cave:
     pots = None
@@ -8,16 +10,15 @@ class Cave:
     zero_pot_index = None
 
     def __init__(self):
-        self.patterns = {}
+        self.patterns: Dict[str, str] = {}
         self.zero_pot_index = 0
 
-    def set_state(self, state):
+    def set_state(self, state: str):
         self.zero_pot_index = 5
         self.pots = "....." + state + "....."
 
-    def add_pattern(self, pattern):
+    def add_pattern(self, pattern: str):
         source, _, result = pattern.split(' ')
-        #final = source[:2] + result + source[-2:]
         self.patterns[source] = result
 
     def next(self):
@@ -38,6 +39,7 @@ class Cave:
 
     def pots_with_plant(self):
         return [(i - self.zero_pot_index) for i in range(0, len(self.pots)) if self.pots[i] == '#']
+
 
 cave = Cave()
 

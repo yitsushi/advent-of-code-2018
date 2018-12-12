@@ -2,9 +2,12 @@
 
 import sys
 import re
-from typing import Tuple, List, Pattern, Any, Generator
+from typing import Tuple, List, Any, Generator
 
-def parameters(parameter_types:Tuple = (str,), names:Tuple = ("Input File", ), default:Tuple=(None, )) -> List[Any]:
+
+def parameters(parameter_types: Tuple = (str,),
+               names: Tuple = ("Input File", ),
+               default: Tuple = (None, )) -> List[Any]:
     try:
         if len(default) != len(parameter_types) or len(names) != len(parameter_types):
             print("Wrong function call: ({}, {}, {})".format(parameter_types, names, default))
@@ -13,39 +16,48 @@ def parameters(parameter_types:Tuple = (str,), names:Tuple = ("Input File", ), d
         number_of_nones = default.count(None)
         if len(sys.argv) <= number_of_nones:
             raise Exception("Wrong number of arguments!")
-            sys.exit(-1)
 
         for i in range(len(sys.argv)-1, len(parameter_types)):
             sys.argv.append(default[i])
 
         return list([t(v) for t, v in zip(parameter_types, sys.argv[1:len(parameter_types)+1])])
 
-    except Exception as e:
-        print(f" !!! {e}")
+    except Exception as exp:
+        print(f" !!! {exp}")
         max_name_length = max([len(v) for v in names]) + 3
-        ktv = [f'{{:{max_name_length}s}} {{}} = {{}}'.format(k, t, v)
-                for k, t, v in zip(names, parameter_types, [v or "(required)" for v in default])]
+        template = f'%{max_name_length}s %s = %s'
+        pairs = zip(names, parameter_types, [v or "(required)" for v in default])
+        ktv = [template % (k, t, v) for k, t, v in pairs]
         print("Required parameters:\n\t{}".format('\n\t'.join(ktv)))
         sys.exit(-1)
 
-def read_input(path:str, separator:str = '\n', ignore:List = ['']) -> Generator:
+
+def read_input(path: str,
+               separator: str = '\n',
+               ignore: List = None) -> Generator:
+    if ignore is None:
+        ignore = ['']
     with open(path) as f:
         content = f.read().split(separator)
         for section in content:
             if section not in ignore:
                 yield section
 
-def parse(content:str, pattern:Pattern, types:Tuple) -> List[Any]:
+
+def parse(content: str,
+          search_pattern: str,
+          types: Tuple) -> List[Any]:
     try:
-        search_result = re.search(pattern, content)
+        search_result = re.search(re.compile(search_pattern), content)
         if search_result is None:
             raise Exception('No match!')
         return list([t(v) for t, v in zip(types, search_result.groups())])
-    except Exception as e:
-        print(f'!!! Parse error {e}')
+    except Exception as exp:
+        print(f'!!! Parse error {exp}')
         print(f'Content: {content}')
-        print(f'Pattern: {pattern}')
+        print(f'Pattern: {search_pattern}')
         sys.exit(-1)
+
 
 if __name__ == '__main__':
     sys.argv = [sys.argv[0]]
@@ -73,9 +85,10 @@ if __name__ == '__main__':
     sys.argv = [sys.argv[0]]
     sys.argv.append('day03/input')
     (input_file, ) = parameters()
-    pattern = re.compile(r'^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$')
+    pattern = r'^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
     try:
-        claims = [parse(line, pattern, (int, int, int, int, int)) for line in read_input(input_file)]
+        claims = [parse(line, pattern, (int, int, int, int, int))
+                  for line in read_input(input_file)]
         print('Sample:')
         print(claims[:5])
     except:
@@ -97,7 +110,9 @@ if __name__ == '__main__':
     sys.argv.append('day08/input')
     sys.argv.append('1000')
     sys.argv.append('2000')
-    input_file, width, height = parameters((str, int, int), ('Input File', 'Width', 'Height'), (None, 1000, 1000))
+    (input_file, width, height) = parameters((str, int, int),
+                                             ('Input File', 'Width', 'Height'),
+                                             (None, 1000, 1000))
 
     print("{:s} | {:d}x{:d}".format(input_file, width, height))
 

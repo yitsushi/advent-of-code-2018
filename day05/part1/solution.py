@@ -2,11 +2,10 @@
 
 import advent_of_code as aoc
 
-(input_file, ) = aoc.parameters()
-material = list(aoc.read_input(input_file))[0]
 
 def is_opposite_polarity(a, b):
     return (a.upper() == b.upper()) and (a != b)
+
 
 def doit(chain):
     i = 0
@@ -17,5 +16,9 @@ def doit(chain):
         else:
             i += 1
     return chain
+
+
+(input_file, ) = aoc.parameters()
+material = list(aoc.read_input(input_file))[0]
 
 print(len(doit(material)))

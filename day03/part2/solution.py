@@ -1,36 +1,38 @@
 #!/usr/bin/env python3
 
-import re
 import advent_of_code as aoc
 from typing import List
 
-class Claim():
+
+class Claim:
     id = 0
     x = 0
     y = 0
     width = 0
     height = 0
 
-    def __init__(self, id:int, x:int, y:int, width:int, height:int):
-        self.id = id
+    def __init__(self, _id: int, x: int, y: int, _width: int, _height: int):
+        self.id = _id
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
+        self.width = _width
+        self.height = _height
 
-class Canvas():
-    area:List[List[List[int]]] = []
+
+class Canvas:
+    area: List[List[List[int]]] = []
     width = 0
     height = 0
 
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.area = [[[] for _ in range(0, width)] for _ in range(0, height)]
+    def __init__(self, _width, _height):
+        self.width = _width
+        self.height = _height
+        self.area = [[[] for _ in range(0, _width)] for _ in range(0, _height)]
 
     def cut(self, claim):
         for h in range(0, claim.height):
-            self.area[claim.y + h][claim.x:claim.x+claim.width] = [x + [claim.id] for x in self.area[claim.y + h][claim.x:claim.x+claim.width]]
+            self.area[claim.y + h][claim.x:claim.x + claim.width] = [
+                x + [claim.id] for x in self.area[claim.y + h][claim.x:claim.x + claim.width]]
 
     def simplify(self):
         items = [item for sublist in self.area for item in sublist if len(item) > 1]
@@ -49,25 +51,26 @@ class Canvas():
                 if len(ids) < 2:
                     continue
 
-                if all([id in already_removed for id in ids]):
+                if all([_id in already_removed for _id in ids]):
                     continue
 
-                toRemove = [c for c in claims if c.id in ids]
-                for claim in toRemove:
+                to_remove = [c for c in claims if c.id in ids]
+                for claim in to_remove:
                     claims.remove(claim)
 
                 already_removed += ids
 
         print()
 
+
 input_file, width, height = aoc.parameters((str, int, int), ('Input File', 'Width', 'Height'), (None, 1000, 1000))
 
 print('[+] Prepare')
 canvas = Canvas(width, height)
 
-LINE_MATCH = re.compile(r'^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$')
-p = lambda line: Claim(*aoc.parse(line, LINE_MATCH, (int, int, int, int, int)))
-claims = [p(line) for line in aoc.read_input(input_file)]
+LINE_MATCH = r'^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
+claims = [Claim(*aoc.parse(line, LINE_MATCH, (int, int, int, int, int)))
+          for line in aoc.read_input(input_file)]
 
 [canvas.cut(c) for c in claims]
 

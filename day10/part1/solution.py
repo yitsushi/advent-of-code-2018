@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-import re, math
+import math
 from PIL import Image
+from typing import Tuple
 import advent_of_code as aoc
+
 
 class Point:
     STR_FORMAT = r'^position=< *([0-9-]+), *([0-9-]+)> velocity=< *([0-9-]+), *([0-9-]+)>$'
@@ -10,18 +12,18 @@ class Point:
     y = 0
     velocity = (0, 0)
 
-    def __init__(self, coordinates, velocity):
+    def __init__(self, coordinates: Tuple[int, int], velocity: Tuple[int, int]):
         (self.x, self.y) = coordinates
         self.velocity = velocity
 
-    def step(self, count):
+    def step(self, count: int):
         self.x += self.velocity[0] * count
         self.y += self.velocity[1] * count
 
-    def from_string(line):
-        (x, y, vx, vy) = aoc.parse(line, Point.STR_FORMAT, (int, int, int, int))
+    @staticmethod
+    def from_string(_line):
+        (x, y, vx, vy) = aoc.parse(_line, Point.STR_FORMAT, (int, int, int, int))
         return Point((x, y), (vx, vy))
-
 
 
 class Sky:
@@ -45,12 +47,12 @@ class Sky:
         (min_x, max_x) = (min(x_values), max(x_values))
         (min_y, max_y) = (min(y_values), max(y_values))
 
-        area = (max_x - min_x) * (max_y - min_y)
+        _area = (max_x - min_x) * (max_y - min_y)
 
-        return (min_x, max_x, min_y, max_y, area)
+        return min_x, max_x, min_y, max_y, _area
 
     def draw(self, filename):
-        (min_x, max_x, min_y, max_y, area) = self.metrics()
+        (min_x, max_x, min_y, max_y, _) = self.metrics()
 
         norm_x = abs(min_x)
         norm_y = abs(min_y)

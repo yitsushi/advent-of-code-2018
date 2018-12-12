@@ -1,18 +1,16 @@
-class SumTable:
-    __storage = None
-    __sum = None
+from typing import List, Tuple
 
-    def __init__(self, width, height):
+
+class SumTable:
+    __storage: List[List[int]] = None
+    __sum: List[List[int]] = None
+
+    def __init__(self, width: int, height: int):
         self.__storage = [[0] * width for _ in range(0, height)]
         self.__sum = [[0] * width for _ in range(0, height)]
         self.__storage[0][0] = 10
 
-    def from_array(arr):
-        c = SumTable(len(arr[0]), len(arr))
-        [c.set_row(i, arr[i]) for i in range(0, len(arr))]
-        return c
-
-    def set_row(self, y, value):
+    def set_row(self, y: int, value: List[int]):
         self.__storage[y] = value
 
     def calculate(self):
@@ -29,10 +27,10 @@ class SumTable:
     def array(self):
         return self.__storage
 
-    def value_at(self, x, y):
+    def value_at(self, x: int, y: int):
         return self.__sum[y][x]
 
-    def area(self, top_left, bottom_right):
+    def area(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
         a = self.value_at(top_left[0] - 1, top_left[1] - 1) if top_left[1] > 0 and top_left[0] > 0 else 0
         b = self.value_at(bottom_right[0], top_left[1] - 1) if top_left[1] > 0 else 0
         c = self.value_at(top_left[0] - 1, bottom_right[1]) if top_left[0] > 0 else 0

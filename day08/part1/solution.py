@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import advent_of_code as aoc
+from typing import List
+
 
 class Node:
     children = None
@@ -13,7 +15,7 @@ class Node:
     def add_child(self, child):
         self.children.append(child)
 
-    def add_meta(self, meta):
+    def add_meta(self, meta: List[int]):
         self.meta.append(meta)
 
     def sum_of_sub_meta(self):
@@ -22,19 +24,21 @@ class Node:
             value += child.sum_of_sub_meta()
         return value
 
-def parse(numbers):
+
+def parse(_numbers):
     node = Node()
-    number_of_children = numbers.pop(0)
-    number_of_meta = numbers.pop(0)
+    number_of_children = _numbers.pop(0)
+    number_of_meta = _numbers.pop(0)
 
     for n in range(0, number_of_children):
-        (child, numbers) = parse(numbers)
+        (child, _numbers) = parse(_numbers)
         node.add_child(child)
 
     for n in range(0, number_of_meta):
-        node.add_meta(numbers.pop(0))
+        node.add_meta(_numbers.pop(0))
 
-    return (node, numbers)
+    return node, _numbers
+
 
 (input_file, ) = aoc.parameters()
 numbers = [int(n) for n in aoc.read_input(input_file, separator=' ')]
