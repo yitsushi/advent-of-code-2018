@@ -8,19 +8,19 @@ class Vector2D:
     def __init__(self, _x: int, _y: int):
         (self.x, self.y) = _x, _y
 
-    def __eq__(self, other):
+    def __eq__(self, other: 'Vector2D'):
         return self.x == other.x and self.y == other.y
 
-    def __add__(self, other):
+    def __add__(self, other: 'Vector2D'):
         return Vector2D(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, other):
+    def __sub__(self, other: 'Vector2D'):
         return Vector2D(self.x - other.x, self.y - other.y)
 
     def __str__(self):
         return '{:d}x{:d}'.format(self.x, self.y)
 
-    def __lt__(self, other):
+    def __lt__(self, other: 'Vector2D'):
         if self.y != other.y:
             return self.y < other.y
         return self.x < other.x
