@@ -1,4 +1,5 @@
-from typing import List, Tuple
+from typing import List
+from .vector_2d import Vector2D
 
 
 class SumTable:
@@ -27,13 +28,13 @@ class SumTable:
     def array(self):
         return self.__storage
 
-    def value_at(self, x: int, y: int):
-        return self.__sum[y][x]
+    def value_at(self, location: Vector2D):
+        return self.__sum[location.y][location.x]
 
-    def area(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
-        a = self.value_at(top_left[0] - 1, top_left[1] - 1) if top_left[1] > 0 and top_left[0] > 0 else 0
-        b = self.value_at(bottom_right[0], top_left[1] - 1) if top_left[1] > 0 else 0
-        c = self.value_at(top_left[0] - 1, bottom_right[1]) if top_left[0] > 0 else 0
-        d = self.value_at(*bottom_right)
+    def area(self, top_left: Vector2D, bottom_right: Vector2D):
+        a = self.value_at(Vector2D(top_left.x - 1, top_left.y - 1)) if top_left.y > 0 and top_left.x > 0 else 0
+        b = self.value_at(Vector2D(bottom_right.x, top_left.y - 1)) if top_left.y > 0 else 0
+        c = self.value_at(Vector2D(top_left.x - 1, bottom_right.y)) if top_left.x > 0 else 0
+        d = self.value_at(bottom_right)
 
         return d - b - c + a
