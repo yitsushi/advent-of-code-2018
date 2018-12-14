@@ -3,6 +3,7 @@ from .claim import Claim
 
 
 class Canvas:
+    # TODO: use Map2D
     area: List[List[List[int]]] = []
     width = 0
     height = 0
@@ -12,7 +13,7 @@ class Canvas:
         self.height = _height
         self.area = [[[] for _ in range(0, _width)] for _ in range(0, _height)]
 
-    def cut(self, claim):
+    def cut(self, claim: Claim):
         for h in range(0, claim.height):
             self.area[claim.y + h][claim.x:claim.x + claim.width] = [
                 x + [claim.id] for x in self.area[claim.y + h][claim.x:claim.x + claim.width]]
@@ -28,4 +29,3 @@ class Canvas:
             area_count += len([x for x in row if len(x) > 1])
 
         return area_count
-
