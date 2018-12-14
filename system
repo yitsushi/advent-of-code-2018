@@ -39,11 +39,18 @@ class AdventOfCodeSolver(object):
         self.measurements.append(('start', time.time()))
         solution.setup()
         self.measurements.append(('setup', time.time()))
-        answer = getattr(solution, 'part%d' % part)()
+
+        try:
+            answer = getattr(solution, 'part%d' % part)()
+            print('The solution for day-{:02d}/part{:d}:\n{}'.format(day, part, answer))
+        except NotImplementedError as error:
+            print(error)
+
         self.measurements.append(('solution', time.time()))
 
-        print('The solution for day-{:02d}/part{:d}:\n{}'.format(day, part, answer))
+        self.__time_report()
 
+    def __time_report(self):
         print('\nTiming:')
         full_time = self.measurements[-1][1] - self.measurements[0][1]
         base_time = self.measurements.pop(0)

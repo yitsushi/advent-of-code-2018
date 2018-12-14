@@ -18,10 +18,10 @@ class BaseSolution(object):
         pass
 
     def part1(self):
-        raise Exception('Not Implemented Yet')
+        raise NotImplementedError('Solution is not implemented yet!')
 
     def part2(self):
-        raise Exception('Not Implemented Yet')
+        raise NotImplementedError('Solution is not implemented yet!')
 
     def parameters(self, parameter_types: Tuple = (str,),
                    names: Tuple = ("Input File", ),
