@@ -7,26 +7,32 @@ import importlib
 from typing import List, Tuple
 
 
+SOLUTION_TEMPLATE = '''
+from advent_of_code import BaseSolution
+
+
+class Solution(BaseSolution):
+    def setup(self):
+        pass
+'''
+
+
 class AdventOfCodeSolver(object):
     """Advent of Code 2018 puzzle solver"""
 
     measurements: List[Tuple[str, float]]
 
-    @staticmethod
-    def __project_root():
-        return os.path.dirname(os.path.realpath(__file__))
+    def init(self, day):
+        if self.__is_day_exists(day):
+            print('Solution directory already exists!')
+            return
 
-    def __day_path(self, day):
-        return os.path.join(self.__project_root(), 'day%02d' % day)
+        os.mkdir(self.__day_path(day))
 
-    def __is_day_exists(self, day):
-        return os.path.isdir(self.__day_path(day)) and os.path.isfile(os.path.join(self.__day_path(day), '__init__.py'))
+        with open(self.__solution_path(day), 'w') as f:
+            f.write(SOLUTION_TEMPLATE)
 
-    def __solution_path(self, day):
-        return os.path.join(self.__day_path(day), '__init__.py')
-
-    def _report_time(self, name):
-        self.measurements.append((name, time.time()))
+        print('Done.')
 
     def solve(self, day, part, *parameters):
         if not self.__is_day_exists(day):
@@ -59,6 +65,22 @@ class AdventOfCodeSolver(object):
             print('  {:10s}: {:.4f}s'.format(current_time[0], current_time[1] - base_time[1]))
             base_time = current_time
         print('\n  {:10s}: {:.4f}s'.format('full', full_time))
+
+    @staticmethod
+    def __project_root():
+        return os.path.dirname(os.path.realpath(__file__))
+
+    def __day_path(self, day):
+        return os.path.join(self.__project_root(), 'day%02d' % day)
+
+    def __is_day_exists(self, day):
+        return os.path.isdir(self.__day_path(day)) and os.path.isfile(os.path.join(self.__day_path(day), '__init__.py'))
+
+    def __solution_path(self, day):
+        return os.path.join(self.__day_path(day), '__init__.py')
+
+    def _report_time(self, name):
+        self.measurements.append((name, time.time()))
 
 
 if __name__ == '__main__':
