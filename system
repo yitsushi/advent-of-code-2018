@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+
+import fire
+import os
+import time
+import importlib
+from typing import List, Tuple
+
+
+class AdventOfCodeSolver(object):
+    """Advent of Code 2018 puzzle solver"""
+
+    measurements: List[Tuple[str, float]]
+
+    @staticmethod
+    def __project_root():
+        return os.path.dirname(os.path.realpath(__file__))
+
+    def __day_path(self, day):
+        return os.path.join(self.__project_root(), 'day%02d' % day)
+
+    def __is_day_exists(self, day):
+        return os.path.isdir(self.__day_path(day)) and os.path.isfile(os.path.join(self.__day_path(day), '__init__.py'))
+
+    def __solution_path(self, day):
+        return os.path.join(self.__day_path(day), '__init__.py')
+
+    def _report_time(self, name):
+        self.measurements.append((name, time.time()))
+
+    def solve(self, day, part, *parameters):
+        if not self.__is_day_exists(day):
+            raise Exception("Solution does not exist for day-%02d" % day)
+
+        self.measurements: List[Tuple[str, float]] = []
+
+        module = importlib.import_module("day%02d" % day)
+        solution = getattr(module, "Solution")(self.__day_path(day), self._report_time, list(parameters))
+        self.measurements.append(('start', time.time()))
+        solution.setup()
+        self.measurements.append(('setup', time.time()))
+        answer = getattr(solution, 'part%d' % part)()
+        self.measurements.append(('solution', time.time()))
+
+        print('The solution for day-{:02d}/part{:d}:\n{}'.format(day, part, answer))
+
+        print('\nTiming:')
+        full_time = self.measurements[-1][1] - self.measurements[0][1]
+        base_time = self.measurements.pop(0)
+        while len(self.measurements) > 0:
+            current_time = self.measurements.pop(0)
+            print('  {:10s}: {:.4f}s'.format(current_time[0], current_time[1] - base_time[1]))
+            base_time = current_time
+        print('\n  {:10s}: {:.4f}s'.format('full', full_time))
+
+
+if __name__ == '__main__':
+    fire.Fire(AdventOfCodeSolver)
