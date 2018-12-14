@@ -43,10 +43,10 @@ class Solution(BaseSolution):
                     yield carts_at_location
                 current = self.world.value_at(current_cart.location)
                 if current == Tile.TURN:
-                    current_cart.facing.rotate(90)
-                    looking_for = [Tile.by_direction(current_cart.facing), Tile.INTERSECT]
-                    if self.world.value_at(current_cart.location + current_cart.facing) not in looking_for:
-                        current_cart.facing.rotate(180)
+                    current_cart.velocity.rotate(90)
+                    looking_for = [Tile.by_direction(current_cart.velocity), Tile.INTERSECT]
+                    if self.world.value_at(current_cart.location + current_cart.velocity) not in looking_for:
+                        current_cart.velocity.rotate(180)
                 elif current == Tile.INTERSECT:
                     current_cart.turn_at_intersection()
 

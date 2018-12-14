@@ -60,11 +60,14 @@ class AdventOfCodeSolver(object):
         print('\nTiming:')
         full_time = self.measurements[-1][1] - self.measurements[0][1]
         base_time = self.measurements.pop(0)
+        longest_name = max([len(c[0]) for c in self.measurements])
+        template = '  {:%ds}: {:.4f}s' % longest_name
         while len(self.measurements) > 0:
             current_time = self.measurements.pop(0)
-            print('  {:10s}: {:.4f}s'.format(current_time[0], current_time[1] - base_time[1]))
+            print(template.format(current_time[0], current_time[1] - base_time[1]))
             base_time = current_time
-        print('\n  {:10s}: {:.4f}s'.format('full', full_time))
+        print()
+        print(template.format('full', full_time))
 
     @staticmethod
     def __project_root():
