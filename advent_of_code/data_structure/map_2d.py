@@ -19,8 +19,28 @@ class Map2D:
 
         return None
 
+    def height(self) -> int:
+        return self.__height
+
+    def width(self) -> int:
+        return self.__width
+
+    def is_on_map(self, x: int, y: int):
+        return 0 <= x < self.__width and 0 <= y < self.__height
+
     def set_value_at(self, position: Vector2D, value: Any):
         self.__area[position.y][position.x] = value
+
+    def edge_values(self) -> List[Any]:
+        """
+        Edge (no pun intended) case, but sometimes we can remove items based on these values
+        """
+        horizontal = self.__area[0] + self.__area[self.__height - 1]
+        vertical = [l[0] for l in self.__area] + [l[self.__width - 1] for l in self.__area]
+        return horizontal + vertical
+
+    def flatten(self) -> List[Any]:
+        return [x for line in self.__area for x in line]
 
     def draw(self, replace: Dict[Any, Any] = None, place: List[Any] = None):
         if replace is None:
@@ -40,4 +60,3 @@ class Map2D:
                 else:
                     print(value, end='')
             print()
-
