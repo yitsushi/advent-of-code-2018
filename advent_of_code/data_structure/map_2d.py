@@ -1,9 +1,9 @@
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Generator
 from .vector_2d import Vector2D
 
 
 class Map2D:
-    defaultValue: 0
+    defaultValue: Any = 0
     __area: List[List[Any]]
     __width: int
     __height: int
@@ -47,16 +47,56 @@ class Map2D:
             replace = {}
         if place is None:
             place = []
+        if len(place) > 0:
+            if not isinstance(place[0], Vector2D):
+                place = [p.location for p in place]
 
         for y in range(0, self.__height):
             for x in range(0, self.__width):
                 pos = Vector2D(x, y)
                 value = self.value_at(pos)
 
-                if pos in [item.location for item in place]:
+                if pos in place:
                     print("o", end='')
                 elif value in replace:
                     print(replace[value], end='')
                 else:
                     print(value, end='')
             print()
+
+    def neighbors(self, location: Vector2D, ignore: List[Any] = []):
+        possible_values: List[Vector2D] = [
+            location + Vector2D(0, -1),
+            location + Vector2D(-1, 0),
+            location + Vector2D(1, 0),
+            location + Vector2D(0, 1)
+        ]
+
+        possible_values = [l for l in possible_values if self.value_at(l) not in ignore]
+        return possible_values
+
+    def iterate_through(self) -> Generator:
+        for y in range(0, self.height()):
+            for x in range(0, self.width()):
+                yield Vector2D(x, y)
+
+    def shortest_path(self, _from: Vector2D, _to: Vector2D, obstacles: List[Any]):
+        if obstacles is None:
+            obstacles = []
+
+        visited: List[Vector2D] = []
+        queue = [(_from, n) for n in self.neighbors(_from, ignore=obstacles)]
+
+        while len(queue) > 0:
+            new_queue = []
+            for item in queue:
+                if item[-1] == _to:
+                    return item
+                for n in self.neighbors(item[-1], ignore=obstacles):
+                    if n in visited:
+                        continue
+                    visited.append(n)
+                    new_queue.append((*item, n))
+            queue = new_queue
+
+        return None
