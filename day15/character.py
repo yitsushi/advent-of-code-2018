@@ -21,10 +21,13 @@ class Character(Player):
     def ap(self):
         return self.attack_power
 
+    def __lt__(self, other: 'Character'):
+        if self.hp() != other.hp():
+            return self.hp() < other.hp()
+        return self.location < other.location
+
     def take_damage(self, amount: int):
         self.health_points -= amount
-        # if self.hp() < 1:
-        #     print('I am dead.')
 
     def attack(self, other: 'Character'):
         other.take_damage(self.ap())
@@ -33,23 +36,17 @@ class Character(Player):
         # Attack if in range
         enemies = self.__proxy.enemies_in_range(self.location)
         if len(enemies) > 0:
-            self.attack(enemies[0])
+            self.attack(sorted(enemies)[0])
             return
 
         # Move to range
-        target = self.__proxy.closet_enemy_target_location(self.location)
-        if target is None:
-            # print('No possible target locations')
+        route = self.__proxy.find_path_to_enemy(self.location)
+        if route is None:
             return
-
-        result = self.__proxy.find_path(self.location, target[1])
-        if result is None:
-            # print('No route found... :(')
-            return
-        self.location = result[1]
+        self.location = route[1]
 
         # Attack if in range
         enemies = self.__proxy.enemies_in_range(self.location)
         if len(enemies) > 0:
-            self.attack(enemies[0])
+            self.attack(sorted(enemies)[0])
             return

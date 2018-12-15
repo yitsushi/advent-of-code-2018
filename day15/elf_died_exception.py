@@ -1,0 +1,2 @@
+class ElfDiedException(Exception):
+    pass

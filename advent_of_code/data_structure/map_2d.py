@@ -97,6 +97,27 @@ class Map2D:
                         continue
                     visited.append(n)
                     new_queue.append((*item, n))
-            queue = new_queue
+            queue = sorted(new_queue, key=lambda x: (len(x), (_to-x[-1]).manhattan(), x[-1]))
+
+        return None
+
+    def shortest_path_to_get(self, _from: Vector2D, _target: Any, obstacles: List[Any]):
+        if obstacles is None:
+            obstacles = []
+
+        visited: List[Vector2D] = []
+        queue = [(_from, n) for n in self.neighbors(_from, ignore=obstacles)]
+
+        while len(queue) > 0:
+            new_queue = []
+            for item in queue:
+                if self.value_at(item[-1]) == _target:
+                    return item
+                for n in self.neighbors(item[-1], ignore=obstacles):
+                    if n in visited:
+                        continue
+                    visited.append(n)
+                    new_queue.append((*item, n))
+            queue = sorted(new_queue, key=lambda x: (len(x), x[-1]))
 
         return None

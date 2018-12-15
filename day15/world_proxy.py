@@ -1,6 +1,6 @@
 from advent_of_code.data_structure import Vector2D
 from advent_of_code.data_structure import Map2D
-from typing import Type, List
+from typing import Type
 from .tile import Tile
 
 
@@ -31,19 +31,27 @@ class WorldProxy:
             return None
 
         if len(possible_targets) < 2:
-            return possible_targets[0]
+            return possible_targets[0][1]
 
         closest = min(possible_targets)
         all_closest = [v for v in possible_targets if v[0] == closest[0]]
         if len(all_closest) < 2:
-            return all_closest[0]
+            return all_closest[0][1]
 
-        '''
-        Shit! I have to propagate down the enemy too, or I can't compare their HP :(
-        '''
         all_closest.sort(key=lambda x: x[2].hp())
-        return all_closest[0]
+        lowest_hp = min(all_closest, key=lambda x: x[2].hp())
+        all_same_hp = [v for v in all_closest if v[2].hp() == lowest_hp[2].hp()]
+        if len(all_same_hp) < 2:
+            return all_same_hp[0][1]
+
+        return sorted(all_same_hp, key=lambda x: x[1])[0][1]
 
     def find_path(self, _from: Vector2D, _to: Vector2D):
         m: Map2D = self.__world.snapshot()
-        return m.shortest_path(_from, _to, obstacles=[Tile.WALL, self.__class.tile_type])
+        return m.shortest_path(_from, _to,
+                               obstacles=[Tile.WALL, self.__class.tile_type])
+
+    def find_path_to_enemy(self, _from: Vector2D):
+        m: Map2D = self.__world.snapshot()
+        return m.shortest_path_to_get(_from, self.__enemy.tile_type,
+                                      obstacles=[Tile.WALL, self.__class.tile_type])

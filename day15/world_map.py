@@ -4,6 +4,7 @@ from .tile import Tile
 from .character import Character
 from .goblin import Goblin
 from .elf import Elf
+from .elf_died_exception import ElfDiedException
 
 
 class WorldMap(Map2D):
@@ -22,7 +23,7 @@ class WorldMap(Map2D):
     def list_all(self, _type: Type = None):
         if _type is None:
             _type = Character
-        return [c for c in self.characters if isinstance(c, _type)]
+        return [c for c in self.characters if isinstance(c, _type) and c.hp() > 0]
 
     def characters_in_reading_order(self) -> List[Character]:
         return sorted(self.characters, key=lambda x: x.location)
@@ -31,18 +32,35 @@ class WorldMap(Map2D):
         self.snapshot().draw(replace=replace, place=place)
 
     def round(self):
+        elf_indicator = 0
         for ch in self.characters_in_reading_order():
-            # print(ch)
-            ch.round()
+            if ch.hp() < 1:
+                continue
+
+            try:
+                ch.round()
+            except ElfDiedException:
+                elf_indicator = -1
+
+            if len(self.list_all(Elf)) < 1:
+                print('Goblins won!')
+                return self.number_of_rounds, sum([c.hp() for c in self.list_all(Goblin)])
+            if len(self.list_all(Goblin)) < 1:
+                print('Elves won!')
+                return self.number_of_rounds, sum([c.hp() for c in self.list_all(Elf)])
+
+        self.clear_dead_bodies()
         self.number_of_rounds += 1
+
+        return self.number_of_rounds, elf_indicator
 
     def clear_dead_bodies(self):
         self.characters = [c for c in self.characters if c.hp() > 0]
 
     def snapshot(self) -> Map2D:
         snapshot: Map2D = Map2D(self.width(), self.height())
-        goblin_locations = [c.location for c in self.characters if isinstance(c, Goblin)]
-        elf_locations = [c.location for c in self.characters if isinstance(c, Elf)]
+        goblin_locations = [c.location for c in self.list_all(Goblin)]
+        elf_locations = [c.location for c in self.list_all(Elf)]
         for location in self.iterate_through():
             snapshot.set_value_at(location, self.value_at(location))
             if location in goblin_locations:

@@ -5,12 +5,13 @@ from .world_proxy import WorldProxy
 from .tile import Tile
 from .elf import Elf
 from .goblin import Goblin
+from .elf_died_exception import ElfDiedException
 
 
 class Solution(BaseSolution):
     world: WorldMap
 
-    def setup(self):
+    def setup(self, elf_power: int = 3):
         (input_file, ) = self.parameters()
         lines = list(self.read_input(input_file))
 
@@ -20,12 +21,12 @@ class Solution(BaseSolution):
         goblin_proxy = WorldProxy(Goblin, Elf, self.world)
 
         for y in range(0, len(lines)):
-            for x in range(0 , len(lines[y])):
+            for x in range(0, len(lines[y])):
                 location = Vector2D(x, y)
                 value = Tile.from_char(lines[y][x])
 
                 if value == Tile.ELF:
-                    self.world.add_character(Elf(location, elf_proxy))
+                    self.world.add_character(Elf(location, elf_proxy, elf_power))
                     value = Tile.EMPTY
                 elif value == Tile.GOBLIN:
                     self.world.add_character(Goblin(location, goblin_proxy))
@@ -33,26 +34,26 @@ class Solution(BaseSolution):
 
                 self.world.set_value_at(location, value)
 
-    def part1(self):
+    def play(self, stop_if_an_elf_dies: bool = False):
         while True:
-            self.world.clear_dead_bodies()
-            if len(self.world.list_all(Elf)) < 1:
-                total_hp_left = sum([c.hp() for c in self.world.list_all(Goblin)])
-                print('Goblins won!')
-                break
-            if len(self.world.list_all(Goblin)) < 1:
-                total_hp_left = sum([c.hp() for c in self.world.list_all(Elf)])
-                print('Elves won!')
-                break
+            rounds, remaining_hp = self.world.round()
+            if remaining_hp < 0 and stop_if_an_elf_dies:
+                raise ElfDiedException()
+            if remaining_hp > 0:
+                print('Number of rounds: ', rounds)
+                print('HP left: ', remaining_hp)
+                return rounds * remaining_hp
 
-            '''
-            print(self.world.number_of_rounds)
-            self.world.draw(replace=Tile.render_map())
-            print()
-            '''
-            self.world.round()
+    def part1(self):
+        return self.play()
 
-        self.world.draw(replace=Tile.render_map())
-        print('Number of rounds: ', self.world.number_of_rounds)
-        print('HP left: ', total_hp_left)
-        return self.world.number_of_rounds * total_hp_left
+    def part2(self):
+        x = 4
+        while True:
+            print(f'Elf power: {x}')
+            self.setup(x)
+            try:
+                return self.play(stop_if_an_elf_dies=True)
+            except ElfDiedException:
+                x += 1
+                continue
