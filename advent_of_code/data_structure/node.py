@@ -9,4 +9,3 @@ class Node:
 
     def add_child(self, child: 'Node'):
         self.children.append(child)
-

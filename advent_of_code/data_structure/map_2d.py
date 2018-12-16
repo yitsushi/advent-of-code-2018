@@ -64,7 +64,9 @@ class Map2D:
                     print(value, end='')
             print()
 
-    def neighbors(self, location: Vector2D, ignore: List[Any] = []):
+    def neighbors(self, location: Vector2D, ignore: List[Any] = None):
+        if ignore is None:
+            ignore = []
         possible_values: List[Vector2D] = [
             location + Vector2D(0, -1),
             location + Vector2D(-1, 0),
