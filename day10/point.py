@@ -1,4 +1,4 @@
-from advent_of_code.data_structure import Player
+from advent_of_code import Player
 
 
 class Point(Player):

@@ -1,4 +1,4 @@
-from advent_of_code.data_structure import Vector2D
+from advent_of_code import Vector2D
 from PIL import Image
 from typing import List
 from .point import Point

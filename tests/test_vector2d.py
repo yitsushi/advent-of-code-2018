@@ -1,6 +1,6 @@
 import unittest
 from collections import namedtuple
-from advent_of_code.data_structure import Vector2D
+from advent_of_code import Vector2D
 
 
 class TestVector2D(unittest.TestCase):
@@ -67,3 +67,15 @@ class TestVector2D(unittest.TestCase):
         for case in cases:
             value = case.vector.manhattan()
             self.assertEqual(value, case.expected, f'wanted: {case.expected}, got: {value}')
+
+    def test_comparison(self):
+        Case = namedtuple('Case', 'a b method')
+        cases = [
+            Case(Vector2D(5, 6), Vector2D(1, 4), self.assertFalse),
+            Case(Vector2D(5, -6), Vector2D(6, 1), self.assertTrue),
+            Case(Vector2D(-5, 6), Vector2D(1, 6), self.assertTrue),
+            Case(Vector2D(-5, -6), Vector2D(-8, -6), self.assertFalse)
+        ]
+
+        for case in cases:
+            case.method(case.a < case.b)

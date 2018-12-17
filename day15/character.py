@@ -1,4 +1,4 @@
-from advent_of_code.data_structure import Player, Vector2D
+from advent_of_code import Player, Vector2D
 from .world_proxy import WorldProxy
 from .tile import Tile
 

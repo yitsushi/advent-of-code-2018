@@ -1,5 +1,4 @@
-from advent_of_code import BaseSolution
-from advent_of_code.data_structure import Vector2D
+from advent_of_code import BaseSolution, Vector2D
 import math
 from .point import Point
 from .sky import Sky

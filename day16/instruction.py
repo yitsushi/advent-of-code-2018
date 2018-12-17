@@ -1,4 +1,3 @@
-
 class Instruction:
     opcode: int
     a: int

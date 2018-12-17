@@ -1,4 +1,4 @@
-from advent_of_code.data_structure import Map2D
+from advent_of_code import Map2D
 from typing import List, Type, Dict, Any
 from .tile import Tile
 from .character import Character

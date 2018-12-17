@@ -1,5 +1,4 @@
-from advent_of_code.data_structure import Vector2D
-from advent_of_code.data_structure import Map2D
+from advent_of_code import Vector2D, Map2D
 from typing import Type
 from .tile import Tile
 

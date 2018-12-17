@@ -1,4 +1,4 @@
-from advent_of_code.data_structure import Node as BaseNode
+from advent_of_code import Node as BaseNode
 from typing import List
 
 

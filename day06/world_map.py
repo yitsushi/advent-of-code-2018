@@ -1,5 +1,5 @@
 from typing import List, Generator
-from advent_of_code.data_structure import Vector2D, Map2D
+from advent_of_code import Vector2D, Map2D
 
 
 class WorldMap(Map2D):

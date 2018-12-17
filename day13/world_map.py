@@ -1,5 +1,4 @@
-from advent_of_code.data_structure import Map2D
-from advent_of_code.data_structure import Vector2D
+from advent_of_code import Map2D, Vector2D
 from typing import List, Dict
 from .tile import Tile
 from .cart import Cart

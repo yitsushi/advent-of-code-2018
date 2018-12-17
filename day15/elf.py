@@ -1,4 +1,4 @@
-from advent_of_code.data_structure import Vector2D
+from advent_of_code import Vector2D
 from .character import Character
 from .tile import Tile
 from .elf_died_exception import ElfDiedException
