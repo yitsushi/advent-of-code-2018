@@ -42,6 +42,9 @@ class Map2D:
     def flatten(self) -> List[Any]:
         return [x for line in self.__area for x in line]
 
+    def flatten_snapshot(self, replace: Dict[Any, Any]) -> str:
+        return "".join([replace[x] for line in self.__area for x in line])
+
     def draw(self, replace: Dict[Any, Any] = None, place: List[Any] = None):
         if replace is None:
             replace = {}
@@ -64,15 +67,20 @@ class Map2D:
                     print(value, end='')
             print()
 
-    def neighbors(self, location: Vector2D, ignore: List[Any] = None):
+    def neighbors(self, location: Vector2D, ignore: List[Any] = None, only_cardinals: bool = True):
         if ignore is None:
             ignore = []
+
         possible_values: List[Vector2D] = [
             location + Vector2D(0, -1),
             location + Vector2D(-1, 0),
             location + Vector2D(1, 0),
             location + Vector2D(0, 1)
         ]
+        if not only_cardinals:
+            for x in [-1, 1]:
+                for y in [-1, 1]:
+                    possible_values.append(location + Vector2D(x, y))
 
         possible_values = [l for l in possible_values if self.value_at(l) not in ignore]
         return possible_values
@@ -123,3 +131,10 @@ class Map2D:
             queue = sorted(new_queue, key=lambda x: (len(x), x[-1]))
 
         return None
+
+    def snapshot(self) -> 'Map2D':
+        snapshot: Map2D = Map2D(self.width(), self.height())
+        for location in self.iterate_through():
+            snapshot.set_value_at(location, self.value_at(location))
+
+        return snapshot
