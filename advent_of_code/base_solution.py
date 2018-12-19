@@ -51,7 +51,7 @@ class BaseSolution(object):
 
     def read_input(self, path: str,
                    separator: str = '\n',
-                   ignore: List = None) -> Generator:
+                   ignore: List = None) -> Generator[str, None, None]:
 
         if ignore is None:
             ignore = ['']
@@ -59,7 +59,7 @@ class BaseSolution(object):
         path = os.path.join(self.__base, path)
 
         with open(path) as f:
-            content = f.read().split(separator)
+            content: List[str] = f.read().split(separator)
             for section in content:
                 if section not in ignore:
                     yield section
