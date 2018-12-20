@@ -2,7 +2,7 @@ from typing import List, Any
 
 
 class Node:
-    children: List
+    children: List[Any]
     __value: Any
 
     def __init__(self, value: Any):
