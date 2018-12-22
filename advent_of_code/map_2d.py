@@ -61,6 +61,8 @@ class Map2D:
 
                 if pos in place:
                     print("o", end='')
+                elif hasattr(value, 'map_tile_format'):
+                    print(value.map_tile_format(), end='')
                 elif value in replace:
                     print(replace[value], end='')
                 else:

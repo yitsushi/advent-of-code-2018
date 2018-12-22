@@ -38,7 +38,8 @@ class BaseSolution(object):
             for i in range(len(self.__parameters), len(parameter_types)):
                 self.__parameters.append(default[i])
 
-            return list([t(v) for t, v in zip(parameter_types, self.__parameters[0:len(parameter_types)])])
+            return list([t(v) if (not hasattr(v, '__iter__') or t == str) else t(*v)
+                         for t, v in zip(parameter_types, self.__parameters[0:len(parameter_types)])])
 
         except Exception as exp:
             print(f" !!! {exp}")
