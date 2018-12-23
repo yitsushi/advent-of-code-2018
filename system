@@ -7,8 +7,7 @@ import importlib
 from typing import List, Tuple
 
 
-SOLUTION_TEMPLATE = '''
-from advent_of_code import BaseSolution
+SOLUTION_TEMPLATE = '''from advent_of_code import BaseSolution
 
 
 class Solution(BaseSolution):
@@ -21,6 +20,10 @@ class AdventOfCodeSolver(object):
     """Advent of Code 2018 puzzle solver"""
 
     measurements: List[Tuple[str, float]]
+    debug: bool
+
+    def __init__(self):
+        self.debug = os.getenv('DEBUG', None) is not None
 
     def init(self, day):
         if self.__is_day_exists(day):
@@ -44,15 +47,17 @@ class AdventOfCodeSolver(object):
         solution = getattr(module, "Solution")(self.__day_path(day), self._report_time, list(parameters))
         self.measurements.append(('start', time.time()))
         solution.setup()
-        self.measurements.append(('setup', time.time()))
+        self._report_time('setup')
 
+        answer = None
         try:
             answer = getattr(solution, 'part%d' % part)()
-            print('The solution for day-{:02d}/part{:d}:\n{}'.format(day, part, answer))
         except NotImplementedError as error:
             print(error)
 
-        self.measurements.append(('solution', time.time()))
+        self._report_time('solution')
+
+        print('The solution for day-{:02d}/part{:d}:\n{}'.format(day, part, answer))
 
         self.__time_report()
 
@@ -83,7 +88,10 @@ class AdventOfCodeSolver(object):
         return os.path.join(self.__day_path(day), '__init__.py')
 
     def _report_time(self, name):
-        self.measurements.append((name, time.time()))
+        t = time.time()
+        if self.debug:
+            print(' [{1:10.4f}] >>> {0:20s}'.format(name, t - self.measurements[-1][1]))
+        self.measurements.append((name, t))
 
 
 if __name__ == '__main__':
